@@ -22,14 +22,14 @@ function Login() {
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
 
-      // Navigate based on role
       if (user.role === 'student') {
-        navigate('/student');
+        navigate('/student', { state: { email: user.email } });
       } else if (user.role === 'instructor') {
-        navigate('/instructor');
+        navigate('/instructor', { state: { email: user.email } });
       } else {
         navigate('/');
       }
+
     } catch (err) {
       alert(err.response?.data?.message || 'Login failed');
     }

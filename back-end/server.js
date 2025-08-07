@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.js'; // Make sure the path is correct
+import courseRoutes from './routes/courseRoutes.js';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.get('/', (req, res) => {
 
 // Auth routes
 app.use('/api/auth', authRoutes);
+app.use('/api/courses', courseRoutes);
 
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
