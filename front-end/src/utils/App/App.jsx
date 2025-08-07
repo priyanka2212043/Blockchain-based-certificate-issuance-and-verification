@@ -1,10 +1,10 @@
 // App.js
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './components/Home';
-import Login from './components/Login';
-import Register from './components/Register';
-import Student from './components/student';
-import Instructor from './components/student';
+import Home from '../../components/Home';
+import Login from '../../components/Login';
+import Register from '../../components/Register';
+import Student from '../../components/StudentDashboard';
+import Instructor from '../../components/StudentDashboard';
 function App() {
   return (
     <Router>

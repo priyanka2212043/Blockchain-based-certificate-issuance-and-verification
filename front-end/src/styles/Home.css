@@ -1,148 +1,86 @@
-/* Home.css */
-
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #0d1117;
-  color: #e6edf3;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #000;
+  color: #fff;
 }
 
-/* Don't center the navbar - place it at the top */
-.navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.2rem 3rem;
-  border-bottom: 1px solid #21262d;
-  width: 100%;
-  position: sticky;
-  top: 0;
-  background-color: #0d1117;
-  z-index: 1000;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.navbar-left {
-  display: flex;
-  align-items: center;
-}
-.logo-image {
-  height: 40px;
-}
-.navbar-right {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-}
-.navbar-right a {
-  text-decoration: none;
-  color: #e6edf3;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-.navbar-right a:hover {
-  color: #58a6ff;
-}
-.login-btn,
-.register-btn {
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.3s ease;
-}
-.login-btn {
-  background-color: transparent;
-  color: #e6edf3;
-  border: 1px solid #30363d;
-}
-.register-btn {
-  background-color: #58a6ff;
-  color: white;
-}
-.login-btn:hover {
-  background-color: #21262d;
-}
-.register-btn:hover {
-  background-color: #1f6feb;
-}
-
-/* Home container no longer centers everything */
 .home-container {
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
+  display: flex;
 }
 
-/* New wrapper to center main content */
 .main-wrapper {
   flex: 1;
   display: flex;
-  justify-content: center;
   align-items: center;
-  padding: 2rem 1rem;
+  justify-content: center;
+  padding-top: 100px; /* accommodate fixed navbar */
+  padding-bottom: 50px;
+  padding-left: 425px;
 }
 
 .main-content {
   text-align: center;
-  max-width: 800px;
-  width: 100%;
+  max-width: 600px;
+  padding: 2rem;
+  background-color: #111;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 170, 255, 0.3);
 }
 
 .main-content h1 {
-  font-size: 2.8rem;
+  font-size: 2.5rem;
   margin-bottom: 1rem;
-  color: #e6edf3;
 }
 
 .main-content h1 span {
-  color: #58a6ff;
+  color: #00aaff;
 }
 
 .main-content p {
   font-size: 1.2rem;
-  color: #8b949e;
   margin-bottom: 2rem;
 }
 
 .google-login,
 .more-options {
-  padding: 0.8rem 1.5rem;
-  background-color: #30363d;
-  color: #e6edf3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #00aaff;
+  color: #fff;
   border: none;
-  border-radius: 6px;
-  font-weight: 500;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  margin: 0.5rem auto;
+  border-radius: 5px;
   cursor: pointer;
-  margin-bottom: 1rem;
-  transition: background 0.3s ease;
+  width: 100%;
+  max-width: 300px;
 }
+
 .google-login img {
   width: 20px;
-  height: 20px;
-  margin-right: 0.6rem;
-  vertical-align: middle;
-}
-.google-login:hover,
-.more-options:hover {
-  background-color: #484f58;
+  margin-right: 10px;
 }
 
 .divider {
   display: flex;
   align-items: center;
-  justify-content: center;
+  color: #ccc;
   margin: 1.5rem 0;
 }
+
 .divider hr {
   flex: 1;
-  border: none;
   height: 1px;
-  background-color: #21262d;
+  background-color: #333;
+  border: none;
 }
+
 .divider span {
-  margin: 0 1rem;
-  color: #8b949e;
+  margin: 0 10px;
+  color: #777;
 }

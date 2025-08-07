@@ -1,6 +1,6 @@
 import React from 'react';
 
-function StudentWelcome() {
+function StudentDashboard() {
   const user = JSON.parse(localStorage.getItem('user'));
 
   return (
@@ -11,4 +11,4 @@ function StudentWelcome() {
   );
 }
 
-export default StudentWelcome;
+export default StudentDashboard;

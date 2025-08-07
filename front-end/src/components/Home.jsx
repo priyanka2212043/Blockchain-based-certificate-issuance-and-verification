@@ -1,7 +1,6 @@
-// Home.js
 import { useNavigate } from 'react-router-dom';
 import googleIcon from '../assets/google-icon.jpg';
-import logo from '../assets/logo.png';
+import Navbar from './Navbar';
 import '../styles/Home.css';
 
 function Home() {
@@ -9,22 +8,13 @@ function Home() {
 
   return (
     <div className="home-container">
-      <header className="navbar">
-        <div className="navbar-left">
-          <img src={logo} alt="Logo" className="logo-image" />
-        </div>
-        <nav className="navbar-right">
-          <a href="#">Courses</a>
-          <button className="login-btn" onClick={() => navigate('/login')}>Log in</button>
-          <button className="register-btn" onClick={() => navigate('/register')}>Register</button>
-        </nav>
-      </header>
+      <Navbar />
 
-      <div className="main-wrapper">
+      <main className="main-wrapper">
         <div className="main-content">
-          <h1>Your gateway to tech skills.</h1>
+          <h1>Your gateway to <span>tech skills</span>.</h1>
           <p>
-            Learn the latest technology with interactive, hands-on courses.
+            Learn the latest technology with interactive, hands‑on courses.
             <strong> It’s free.</strong>
           </p>
 
@@ -37,9 +27,11 @@ function Home() {
             <hr /><span>or</span><hr />
           </div>
 
-          <button className="more-options" onClick={() => navigate('/login')}>See more options</button>
+          <button className="more-options" onClick={() => navigate('/login')}>
+            See more options
+          </button>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
