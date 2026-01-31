@@ -1,18 +1,41 @@
 import React, { useState, useEffect, useRef } from "react";
 import logo from "../assets/logo.png";
 import "../styles/InstructorDashboard.css";
+import { useNavigate } from "react-router-dom";
+import categoryImages from "./categoryImages";
 
 function InstructorDashboard() {
   const storedUser = JSON.parse(localStorage.getItem("user"));
-  const userEmail = storedUser?.email || "User";
-  const avatarLetter = userEmail.charAt(0).toUpperCase();
+
+  const instructorId = storedUser?.id || "";
+  const instructorName = storedUser?.username || storedUser?.email;
+  const avatarLetter = instructorName.charAt(0).toUpperCase();
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [myCourses, setMyCourses] = useState([]);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
 
+  // ✅ Fetch instructor’s courses
   useEffect(() => {
-    // Close dropdown when clicking outside
+    const fetchCourses = async () => {
+      try {
+        if (!instructorId) return;
+        const response = await fetch(
+          `http://localhost:5000/api/courses/instructor/${instructorId}`
+        );
+        const data = await response.json();
+        if(response.status!=404)
+          setMyCourses(data);
+      } catch (error) {
+        console.error("Error fetching instructor courses:", error);
+      }
+    };
+    fetchCourses();
+  }, [instructorId]);
+
+  // ✅ Close dropdown on outside click
+  useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowDropdown(false);
@@ -21,20 +44,6 @@ function InstructorDashboard() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  useEffect(() => {
-    // Fetch instructor-specific courses from backend
-    const fetchCourses = async () => {
-      try {
-        const response = await fetch(`/api/courses/instructor/${storedUser?.id}`);
-        const data = await response.json();
-        setMyCourses(data);
-      } catch (error) {
-        console.error("Error fetching instructor courses:", error);
-      }
-    };
-    fetchCourses();
-  }, [storedUser?.id]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -60,19 +69,21 @@ function InstructorDashboard() {
       <main>
         <header className="dashboard-header">
           <div className="header-left">
-            <img src={logo} alt="Logo" className="logo-image" style={{ width: "32px", height: "32px" }} />
+            <img
+              src={logo}
+              alt="Logo"
+              className="logo-image"
+              style={{ width: "32px", height: "32px" }}
+            />
             <div className="browse-dropdown">
               <button className="browse-button">BROWSE ▾</button>
               <div className="dropdown-content">
                 <div className="dropdown-section">
                   <h4>Browse Courses</h4>
                   <ul>
-                    <li>IT & Software</li>
-                    <li>AI</li>
-                    <li>Cloud</li>
-                    <li>Python</li>
-                    <li>ML</li>
-                    <li>UI/UX</li>
+                    {Object.keys(categoryImages).map((category) => (
+                      <li key={category}>{category}</li>
+                    ))}
                   </ul>
                   <button className="discover-button">Discover All Courses</button>
                 </div>
@@ -81,7 +92,11 @@ function InstructorDashboard() {
           </div>
 
           <div className="header-right">
-            <input type="text" placeholder="Search Courses" className="search-box" />
+            <input
+              type="text"
+              placeholder="Search Courses"
+              className="search-box"
+            />
             <div className="avatar-container" ref={dropdownRef}>
               <div
                 className="user-avatar"
@@ -93,12 +108,14 @@ function InstructorDashboard() {
               {showDropdown && (
                 <div className="profile-dropdown">
                   <p className="welcome-text">Welcome</p>
-                  <p className="user-email">{userEmail}</p>
+                  <p className="user-email">{instructorId}</p>
                   <hr />
                   <ul>
                     <li>Profile</li>
                     <li>My Courses</li>
-                    <li onClick={handleLogout} style={{ cursor: "pointer" }}>Logout</li>
+                    <li onClick={handleLogout} style={{ cursor: "pointer" }}>
+                      Logout
+                    </li>
                   </ul>
                 </div>
               )}
@@ -110,7 +127,12 @@ function InstructorDashboard() {
         <section>
           <div className="section-header">
             <h2>My Uploaded Courses</h2>
-            <button className="add-course-button">+ Add Course</button>
+            <button
+              className="add-course-button"
+              onClick={() => navigate("/add-course")}
+            >
+              + Add Course
+            </button>
           </div>
 
           <div className="grid">
@@ -119,10 +141,14 @@ function InstructorDashboard() {
             ) : (
               myCourses.map((course) => (
                 <div className="course-card" key={course._id}>
-                  <img src={course.imageUrl} alt={course.title} />
-                  <div className="rating">★ {course.rating || "4.5"}</div>
+                  <img
+                    src={
+                      categoryImages[course.category] || categoryImages["default"]
+                    }
+                    alt={course.title}
+                  />
                   <h3>{course.title}</h3>
-                  <p>{course.duration || "2 hrs"}</p>
+                  <p className="instructor-name">By {course.instructorName}</p>
                   <button>View Course</button>
                 </div>
               ))

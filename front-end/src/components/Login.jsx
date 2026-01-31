@@ -7,6 +7,7 @@ import api from '../utils/api';
 function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -14,13 +15,15 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const res = await api.post('/auth/login', form);
       const { user, token, message } = res.data;
 
-      alert(message);
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
+
+      alert(message || 'Login successful!');
 
       if (user.role === 'student') {
         navigate('/student', { state: { email: user.email } });
@@ -29,14 +32,24 @@ function Login() {
       } else {
         navigate('/');
       }
-
     } catch (err) {
-      alert(err.response?.data?.message || 'Login failed');
+      alert(err.response?.data?.message || 'Invalid email or password');
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleRegisterClick = () => {
     navigate('/register');
+  };
+
+  const handleForgotPassword = () => {
+    navigate('/forgot-password'); // ✅ new page
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:5000/auth/google'; 
+    // 🔗 replace with your backend Google OAuth route
   };
 
   return (
@@ -64,9 +77,17 @@ function Login() {
             required
           />
 
-          <a href="#" className="forgot-password">Forgot Password?</a>
+          <span
+            className="forgot-password"
+            onClick={handleForgotPassword}
+            style={{ cursor: 'pointer', color: '#58a6ff' }}
+          >
+            Forgot Password?
+          </span>
 
-          <button type="submit" className="login-button">Log in</button>
+          <button type="submit" className="login-button" disabled={loading}>
+            {loading ? 'Logging in...' : 'Log in'}
+          </button>
         </form>
 
         <div className="divider">
@@ -74,9 +95,9 @@ function Login() {
         </div>
 
         <div className="login-options">
-          <button className="google-login" type="button">
+          <button className="google-login" type="button" onClick={handleGoogleLogin}>
             <img src={googleIcon} alt="Google" />
-            Google
+            Continue with Google
           </button>
         </div>
 

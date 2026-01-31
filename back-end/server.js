@@ -1,39 +1,40 @@
-// backend/server.js
-import express from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import authRoutes from './routes/authRoutes.js'; // Make sure the path is correct
-import courseRoutes from './routes/courseRoutes.js';
-
+import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
+import authRoutes from "./routes/authRoutes.js";
+import courseRoutes from "./routes/courseRoutes.js";
+import enrollRoutes from "./routes/enrollRoutes.js";
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 5000;
+
+// Required for __dirname with ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Frontend origin
-  credentials: true                // Allow credentials (cookies, headers)
+  origin: "http://localhost:5173",  // frontend URL
+  credentials: true                 // allow cookies/headers
 }));
 
 app.use(express.json());
-app.get('/', (req, res) => {
-  res.send('API is running...');
-});
 
-// Auth routes
-app.use('/api/auth', authRoutes);
-app.use('/api/courses', courseRoutes);
+// ✅ Serve uploads folder
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => {
-  console.log('MongoDB connected');
-  app.listen(process.env.PORT, () => {
-    console.log(` Server is running on http://localhost:${process.env.PORT}`);
-  });
-})
-.catch((err) => {
-  console.error('MongoDB connection failed:', err.message);
-});
+// Routes
+app.use("/api/courses", courseRoutes);
+app.use("/api/auth",authRoutes);
+app.use("/api/enroll",enrollRoutes);
+// MongoDB connect
+mongoose
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log("MongoDB Connected ✅");
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  })
+  .catch((err) => console.error(err));

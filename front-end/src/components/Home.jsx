@@ -9,7 +9,6 @@ function Home() {
   return (
     <div className="home-container">
       <Navbar />
-
       <main className="main-wrapper">
         <div className="main-content">
           <h1>Your gateway to <span>tech skills</span>.</h1>

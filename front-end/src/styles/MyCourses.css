@@ -1,0 +1,102 @@
+.my-courses-container {
+  min-height: 100vh;     /* full viewport height */
+  width: 100vw;          /* full viewport width */
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #1e3a8a, #93c5fd);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header spans full width */
+.my-courses-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 100%;
+}
+
+/* Back button */
+.back-button {
+  padding: 8px 16px;
+  background-color: #f3f4f6;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s ease;
+}
+.back-button:hover {
+  background-color: #e5e7eb;
+}
+
+/* Logo area */
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-img {
+  width: 45px;
+  height: 45px;
+  object-fit: contain;
+}
+.logo-text {
+  font-size: 22px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+/* Courses Section */
+.courses-section {
+  flex: 1;
+  padding: 30px;
+  width: 100%;
+  background: #fff;
+  border-radius: 0;              /* remove rounded corners */
+  box-shadow: none;              /* remove card look */
+  overflow-x: auto;
+}
+
+.courses-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.courses-table th,
+.courses-table td {
+  text-align: left;
+  padding: 14px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  color: black;
+}
+
+.courses-table th {
+  background-color: #5b90c4;
+  font-weight: 600;
+  color: #010101;
+}
+
+.course-thumb {
+  width: 70px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.courses-table button {
+  padding: 8px 16px;
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.courses-table button:hover {
+  background-color: #1e40af;
+}

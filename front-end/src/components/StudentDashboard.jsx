@@ -1,17 +1,37 @@
 import React, { useState, useEffect, useRef } from "react";
-import logo from '../assets/logo.png';
+import logo from "../assets/logo.png";
+import { useNavigate } from "react-router-dom";
 import "../styles/StudentDashboard.css";
+import categoryImages from "./categoryImages"; // ✅ same as instructor
 
 function StudentDashboard() {
-
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const storedUser = JSON.parse(localStorage.getItem("user"));
   const userName = storedUser?.email || "User";
   const avatarLetter = userName.charAt(0).toUpperCase();
+  const navigate = useNavigate();
 
   const [showDropdown, setShowDropdown] = useState(false);
+  const [courses, setCourses] = useState([]); // ✅ fetched courses
+  const [searchQuery, setSearchQuery] = useState(""); // ✅ search input
+  const [selectedCategory, setSelectedCategory] = useState("All"); // ✅ browse filter
   const dropdownRef = useRef(null);
 
+  // ✅ Fetch all courses (students can view all)
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/courses`);
+        const data = await response.json();
+        setCourses(data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
+    fetchCourses();
+  }, []);
 
+  // ✅ Close dropdown on outside click
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -22,12 +42,24 @@ function StudentDashboard() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Logout handler
+  // ✅ Logout handler
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.href = "/login"; // redirect to login
+    window.location.href = "/login";
   };
+
+  // ✅ Filter courses by search + category
+  const filteredCourses = courses.filter((course) => {
+    const matchesSearch =
+      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.instructorName.toLowerCase().includes(searchQuery.toLowerCase());
+
+    const matchesCategory =
+      selectedCategory === "All" || course.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="dashboard-container">
@@ -35,13 +67,22 @@ function StudentDashboard() {
       <aside className="sidebar">
         <h2>Choose From</h2>
         <ul>
-          <li className="font-bold">Popular Courses</li>
-          <li>Microsoft Programs</li>
-          <li>ChatGPT and Generative AI</li>
-          <li>Artificial Intelligence</li>
-          <li>Machine Learning</li>
-          <li>Data Science</li>
-          <li>Digital Marketing</li>
+          <li
+            className={selectedCategory === "All" ? "font-bold" : ""}
+            onClick={() => setSelectedCategory("All")}
+          >
+            All Courses
+          </li>
+          {Object.keys(categoryImages).map((category) => (
+            <li
+              key={category}
+              className={selectedCategory === category ? "font-bold" : ""}
+              onClick={() => setSelectedCategory(category)}
+              style={{ cursor: "pointer" }}
+            >
+              {category}
+            </li>
+          ))}
         </ul>
       </aside>
 
@@ -49,7 +90,12 @@ function StudentDashboard() {
       <main>
         <header className="dashboard-header">
           <div className="header-left">
-            <img src={logo} alt="Logo" className="logo-image" style={{ width: "32px", height: "32px" }} />
+            <img
+              src={logo}
+              alt="Logo"
+              className="logo-image"
+              style={{ width: "32px", height: "32px" }}
+            />
 
             <div className="browse-dropdown">
               <button className="browse-button">BROWSE ▾</button>
@@ -57,30 +103,22 @@ function StudentDashboard() {
                 <div className="dropdown-section">
                   <h4>Browse Courses</h4>
                   <ul>
-                    <li>IT & Software</li>
-                    <li>Management</li>
-                    <li>Data Science</li>
-                    <li>ChatGPT & Gen AI</li>
-                    <li>Digital Marketing</li>
-                    <li>Artificial Intelligence</li>
-                    <li className="highlight">Machine Learning</li>
-                    <li>UI/UX Design</li>
-                    <li>Cloud Computing</li>
-                    <li>Cyber Security</li>
-                    <li>Big Data</li>
+                    {Object.keys(categoryImages).map((category) => (
+                      <li
+                        key={category}
+                        onClick={() => setSelectedCategory(category)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {category}
+                      </li>
+                    ))}
                   </ul>
-                  <button className="discover-button">Discover All Courses</button>
-                </div>
-
-                <div className="dropdown-section subcategories">
-                  <h4>Sub Categories</h4>
-                  <ul>
-                    <li>Machine Learning</li>
-                    <li>Python</li>
-                    <li>Data Visualization</li>
-                    <li>Supervised Machine Learning</li>
-                    <li>Unsupervised Machine Learning</li>
-                  </ul>
+                  <button
+                    className="discover-button"
+                    onClick={() => setSelectedCategory("All")}
+                  >
+                    Discover All Courses
+                  </button>
                 </div>
               </div>
             </div>
@@ -88,7 +126,13 @@ function StudentDashboard() {
 
           {/* Avatar and Search */}
           <div className="header-right">
-            <input type="text" placeholder="Search Courses" className="search-box" />
+            <input
+              type="text"
+              placeholder="Search Courses"
+              className="search-box"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
 
             <div className="avatar-container" ref={dropdownRef}>
               <div
@@ -105,8 +149,10 @@ function StudentDashboard() {
                   <hr />
                   <ul>
                     <li>Profile</li>
-                    <li>My Courses</li>
-                    <li onClick={handleLogout} style={{ cursor: "pointer" }}>Logout</li>
+                    <li onClick={() => navigate("/my-courses")}>My Courses</li>
+                    <li onClick={handleLogout} style={{ cursor: "pointer" }}>
+                      Logout
+                    </li>
                   </ul>
                 </div>
               )}
@@ -116,51 +162,31 @@ function StudentDashboard() {
 
         {/* Courses Section */}
         <section>
-          <h2>Popular Free Courses</h2>
+          <h2>
+            {selectedCategory === "All"
+              ? "Available Courses"
+              : `${selectedCategory} Courses`}
+          </h2>
           <div className="grid">
-            <div className="course-card">
-              <img
-                src="https://d1jnx9ba8s6j9r.cloudfront.net/course/course_image/3e13b7e3c2aa.png"
-                alt="C for Beginners"
-              />
-              <div className="rating">★ 4.49 • 2L+ learners</div>
-              <h3>C for Beginners</h3>
-              <p>2 hrs</p>
-              <button>View Course</button>
-            </div>
-
-            <div className="course-card">
-              <img
-                src="https://d1jnx9ba8s6j9r.cloudfront.net/course/course_image/8cbf6f621155.png"
-                alt="Excel for Beginners"
-              />
-              <div className="rating">★ 4.48 • 14.3L+ learners</div>
-              <h3>Excel for Beginners</h3>
-              <p>5 hrs</p>
-              <button>View Course</button>
-            </div>
-
-            <div className="course-card">
-              <img
-                src="https://d1jnx9ba8s6j9r.cloudfront.net/course/course_image/8cbf6f621155.png"
-                alt="Excel for Beginners"
-              />
-              <div className="rating">★ 4.48 • 14.3L+ learners</div>
-              <h3>Excel for Beginners</h3>
-              <p>5 hrs</p>
-              <button>View Course</button>
-            </div>
-
-            <div className="course-card">
-              <img
-                src="https://d1jnx9ba8s6j9r.cloudfront.net/course/course_image/2f3942e6eb6b.png"
-                alt="Data Visualization With Power BI"
-              />
-              <div className="rating">★ 4.52 • 3.1L+ learners</div>
-              <h3>Data Visualization With Power BI</h3>
-              <p>1.5 hrs</p>
-              <button>View Course</button>
-            </div>
+            {filteredCourses.length === 0 ? (
+              <p>No courses found.</p>
+            ) : (
+              filteredCourses.map((course) => (
+                <div className="course-card" key={course._id}>
+                  <img
+                    src={
+                      categoryImages[course.category] || categoryImages["default"]
+                    }
+                    alt={course.title}
+                  />
+                  <h3>{course.title}</h3>
+                  <p className="instructor-name">By {course.instructorName}</p>
+                  <button onClick={() => navigate(`/courses/${course._id}`)}>
+                    View Course
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         </section>
       </main>

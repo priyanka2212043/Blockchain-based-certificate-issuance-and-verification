@@ -1,27 +1,26 @@
-// models/User.js
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    minlength: 3
+    trim: true,
   },
   email: {
     type: String,
     required: true,
     unique: true,
-    match: /.+\@.+\..+/
+    lowercase: true,
   },
   password: {
     type: String,
     required: true,
-    minlength: 6
   },
   role: {
     type: String,
-    enum: ['student', 'instructor'],
-    default: 'student'
+    enum: ["student", "instructor", "admin"],
+    default: "student",
   }
-}, { timestamps: true });
+}, { timestamps: true }); // optional: adds createdAt, updatedAt automatically
 
-export default mongoose.model('User', userSchema);
+export default mongoose.model("User", userSchema);

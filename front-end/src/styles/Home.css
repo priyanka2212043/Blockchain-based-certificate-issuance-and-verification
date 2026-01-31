@@ -9,18 +9,21 @@ body {
 .home-container {
   min-height: 100vh;
   display: flex;
+  flex-direction: column; /* so navbar stays on top, content below */
 }
 
+/* Wrapper for main content */
 .main-wrapper {
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 100px; /* accommodate fixed navbar */
+  align-items: center;      /* vertical center */
+  justify-content: center;  /* horizontal center */
+  padding-top: 100px;       /* accommodate fixed navbar */
   padding-bottom: 50px;
-  padding-left: 425px;
+  box-sizing: border-box;
 }
 
+/* Main Content Box */
 .main-content {
   text-align: center;
   max-width: 600px;
@@ -44,6 +47,7 @@ body {
   margin-bottom: 2rem;
 }
 
+/* Buttons */
 .google-login,
 .more-options {
   display: flex;
@@ -66,6 +70,7 @@ body {
   margin-right: 10px;
 }
 
+/* Divider */
 .divider {
   display: flex;
   align-items: center;

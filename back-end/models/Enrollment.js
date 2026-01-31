@@ -1,0 +1,26 @@
+import mongoose from "mongoose";
+
+const enrollmentSchema = new mongoose.Schema({
+  studentId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course", required: true },
+  status: { type: String, default: "active" },
+  enrolledAt: { type: Date, default: Date.now },
+
+  // Track progress for each module
+  progress: [
+    {
+      moduleId: { type: mongoose.Schema.Types.ObjectId, required: true },
+      status: { 
+        type: String, 
+        enum: ["not started", "in progress", "completed", "unlocked"], 
+        default: "not started" 
+      }
+    }
+  ],
+
+  // 🔑 Store IPFS URL permanently after all modules completed
+  ipfsHash1: { type: String, default: null }
+});
+
+const Enrollment = mongoose.model("Enrollment", enrollmentSchema);
+export default Enrollment;
