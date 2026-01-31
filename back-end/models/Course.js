@@ -21,6 +21,9 @@ const courseSchema = new mongoose.Schema({
   instructorId: String,
   instructorName: String,
   modules: [moduleSchema],
+  certificateTemplate: { type: String, required: false }, // store template identifier or path
+  signatureUrl: { type: String, default: null }, // store uploaded signature image
 });
+
 
 export default mongoose.model("Course", courseSchema);

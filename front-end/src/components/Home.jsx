@@ -17,14 +17,6 @@ function Home() {
             <strong> It’s free.</strong>
           </p>
 
-          <button className="google-login" onClick={() => navigate('/login')}>
-            <img src={googleIcon} alt="Google icon" />
-            Log in with Google
-          </button>
-
-          <div className="divider">
-            <hr /><span>or</span><hr />
-          </div>
 
           <button className="more-options" onClick={() => navigate('/login')}>
             See more options

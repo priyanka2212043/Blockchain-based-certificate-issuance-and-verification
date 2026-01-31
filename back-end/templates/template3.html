@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate of Completion</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@300;400;600&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: white;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .certificate-container {
+      width: 900px;
+      height: 650px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .certificate-border {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      border: 3px solid #1e3c72;
+      border-radius: 15px;
+      background: linear-gradient(45deg, #f8f9fa 0%, #ffffff 100%);
+      overflow: hidden;
+    }
+
+    /* Top golden bar */
+    .top-design {
+      position: relative;
+      width: 100%;
+      height: 120px;
+      background: linear-gradient(90deg, #1e3c72, #3a7bd5);
+      border-radius: 12px 12px 0 0;
+      text-align: center;
+      padding: 20px 20px;
+    }
+
+    .certificate-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 3px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .certificate-subtitle {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 300;
+      letter-spacing: 2px;
+      margin-top: 5px;
+    }
+
+    .certificate-content {
+      padding: 20px 40px;
+      height: calc(100% - 120px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      z-index: 2;
+    }
+
+    .main-content {
+      text-align: center;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      margin-top: -30px; /* raises everything upward */
+    }
+
+    .awarded-text {
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 10px;
+      font-weight: 400;
+    }
+
+    .recipient-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px;
+      font-weight: 700;
+      color: #2c5aa0;
+      margin: 10px 0;
+      border-bottom: 2px solid #2c5aa0;
+      padding-bottom: 8px;
+      display: inline-block;
+    }
+
+    .course-description {
+      font-size: 16px;
+      color: #333;
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+
+    .course-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: #4a90e2;
+      margin: 6px 0 12px 0; /* tighter spacing */
+    }
+
+    /* Footer section */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 10px;
+      padding: 0 40px 20px;
+    }
+
+    .signature-section, .date-section, .qr-section {
+      flex: 1;
+      text-align: center;
+    }
+
+    .signature-image {
+      width: 120px;
+      height: 50px;
+      background: #f8f8f8;
+      border: 2px dashed #2c5aa0;
+      margin: 0 auto 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #2c5aa0;
+      border-radius: 5px;
+    }
+
+    .signature-title {
+      font-size: 11px;
+      color: #666;
+      font-weight: 600;
+    }
+
+    .completion-date {
+      font-size: 14px;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .date-label {
+      font-size: 11px;
+      color: #666;
+      font-weight: 600;
+    }
+
+    .qr-code {
+      width: 80px;
+      height: 80px;
+      background: #f8f8f8;
+      border: 2px dashed #2c5aa0;
+      margin: 0 auto 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #2c5aa0;
+      border-radius: 5px;
+    }
+
+    .qr-label {
+      font-size: 10px;
+      color: #666;
+      font-weight: 600;
+    }
+
+    .watermark {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-45deg);
+      font-size: 120px;
+      color: rgba(44, 90, 160, 0.05);
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      z-index: 1;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="certificate-container">
+    <div class="certificate-border">
+      
+      <!-- Top colored bar -->
+      <div class="top-design">
+        <h1 class="certificate-title">CERTIFICATE</h1>
+        <p class="certificate-subtitle">OF COMPLETION</p>
+      </div>
+
+      <!-- Certificate Content -->
+      <div class="certificate-content">
+        <div class="main-content">
+          <p class="awarded-text">This certificate is proudly awarded to</p>
+          <div class="recipient-name">{{name}}</div>
+          <p class="course-description">For successfully completing the comprehensive course</p>
+          <div class="course-name">{{course}}</div>
+          <p class="course-description">Demonstrating dedication, skill, and mastery of the subject matter</p>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+          <div class="signature-section">
+            <div class="signature-image">{{signature}}</div>
+            <p class="signature-title">INSTRUCTOR SIGNATURE</p>
+          </div>
+
+          <div class="date-section">
+            <p class="completion-date">{{date}}</p>
+            <p class="date-label">DATE OF COMPLETION</p>
+          </div>
+
+          <div class="qr-section">
+            <div class="qr-code">{{qr}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

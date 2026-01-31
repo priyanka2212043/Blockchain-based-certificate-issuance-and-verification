@@ -1,0 +1,115 @@
+/* wrapper ensures layout below isn't overlapped */
+.template-row-container {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  margin: 8px 0;
+}
+
+/* horizontal scroll row */
+.template-selector {
+  display: flex;
+  gap: 16px;
+  flex-wrap: nowrap;         /* keep single row */
+  overflow-x: auto;          /* horizontal scroll */
+  overflow-y: hidden;        /* do not expand vertically */
+  padding: 10px;
+  scroll-snap-type: x proximity; /* optional nice snapping */
+  -webkit-overflow-scrolling: touch; /* smoother on iOS */
+  box-sizing: border-box;
+}
+
+/* scrollbar visuals (customize) */
+.template-selector::-webkit-scrollbar {
+  height: 8px;
+}
+.template-selector::-webkit-scrollbar-thumb {
+  background: #c6c6c6;
+  border-radius: 6px;
+}
+.template-selector::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* card size fixed so no vertical jump / hiding */
+.template-card {
+  flex: 0 0 280px;           /* fixed width card, won't shrink */
+  scroll-snap-align: center; /* optional */
+  background: #fff;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  padding: 8px;
+  text-align: center;
+  position: relative;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+  box-sizing: border-box;
+}
+
+/* keep image height fixed so cards don't grow vertically */
+.template-card img {
+  width: 100%;
+  height: 160px;            /* control thumbnail height */
+  object-fit: cover;        /* crop nicely without stretching */
+  border-radius: 8px;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* label under image */
+.template-name {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #222;
+  font-weight: 500;
+}
+
+/* hover / selected visuals */
+.template-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  border-color: #007bff22;
+}
+.template-card.selected {
+  border-color: #28a745;
+  box-shadow: 0 6px 18px rgba(40,167,69,0.12);
+}
+
+/* tick mark */
+.tick-mark {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #28a745;
+  color: white;
+  padding: 4px 7px;
+  border-radius: 999px;
+  font-size: 13px;
+  line-height: 1;
+  z-index: 5;
+}
+
+/* make sure signature area below stays visible and above nothing */
+.signature-section {
+  margin-top: 18px;
+  z-index: 1;
+  position: relative;
+}
+
+/* Modal full preview */
+.preview-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.preview-modal img {
+  max-width: 92%;
+  max-height: 92%;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+  object-fit: contain;
+}

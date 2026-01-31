@@ -31,7 +31,7 @@ function AddCourse() {
       title: `Module ${idx + 1}`,
       videoFile: null,
       pdfFile: null,
-      mcq: [{ question: "", options: ["", "", "", ""], answer: "" }],
+      mcq: [{ question: "", options: ["", "", "", ""], correctAnswer: "" }],
       passMark: "",
     }));
 
@@ -73,66 +73,48 @@ function AddCourse() {
     setFormData((prev) => ({ ...prev, modules: updatedModules }));
   };
 
-  // Submit form
+  // Submit form - create course first
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.instructorId || !formData.instructorName) {
+      alert("Missing instructor identity. Please re-login.");
+      return;
+    }
+
     try {
-      if (!formData.instructorId || !formData.instructorName) {
-        alert("Missing instructor identity. Please re-login.");
-        return;
-      }
+      const formPayload = new FormData();
+      formPayload.append("title", formData.title);
+      formPayload.append("description", formData.description);
+      formPayload.append("category", formData.category);
+      formPayload.append("instructorId", formData.instructorId);
+      formPayload.append("instructorName", formData.instructorName);
 
-      const data = new FormData();
-      data.append("title", formData.title);
-      data.append("description", formData.description);
-      data.append("instructorName", formData.instructorName);
-      data.append("instructorId", formData.instructorId);
-      data.append("category", formData.category);
+      // Append modules without template/signature
+      formData.modules.forEach((mod, idx) => {
+        formPayload.append(`modules[${idx}][title]`, mod.title);
+        formPayload.append(`modules[${idx}][passMark]`, mod.passMark || "");
 
-      // Append modules
-      formData.modules.forEach((mod, modIndex) => {
-        data.append(`modules[${modIndex}][title]`, mod.title);
-        data.append(`modules[${modIndex}][passMark]`, mod.passMark || "");
+        if (mod.videoFile) formPayload.append(`modules[${idx}][video]`, mod.videoFile);
+        if (mod.pdfFile) formPayload.append(`modules[${idx}][pdf]`, mod.pdfFile);
 
-        if (mod.videoFile) {
-          data.append(`modules[${modIndex}][video]`, mod.videoFile);
-        }
-        if (mod.pdfFile) {
-          data.append(`modules[${modIndex}][pdf]`, mod.pdfFile);
-        }
-
-        mod.mcq.forEach((q, qIndex) => {
-          data.append(`modules[${modIndex}][mcq][${qIndex}][question]`, q.question);
-          data.append(`modules[${modIndex}][mcq][${qIndex}][correctAnswer]`, q.correctAnswer);
-          q.options.forEach((opt, optIndex) => {
-            data.append(
-              `modules[${modIndex}][mcq][${qIndex}][options][${optIndex}]`,
-              opt
-            );
-          });
-        });
+        formPayload.append(`modules[${idx}][mcq]`, JSON.stringify(mod.mcq));
       });
 
       const response = await fetch("http://localhost:5000/api/courses/add", {
         method: "POST",
-        body: data,
+        body: formPayload,
       });
 
-      const text = await response.text();
-      let result;
-      try {
-        result = JSON.parse(text);
-      } catch {
-        throw new Error("Server did not return valid JSON: " + text);
-      }
+      const data = await response.json();
+      console.log(data);
+      //if (!response.ok) throw new Error(data.error || "Failed to create course");
 
-      if (!response.ok) throw new Error(result.error || "Failed to add course");
-
-      alert("✅ Course added successfully!");
-      navigate("/instructor");
-    } catch (error) {
-      console.error("Error adding course:", error);
-      alert(error.message);
+      // Navigate to template selection with real courseId
+      navigate(`/select-template/${data.course._id}`);
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
     }
   };
 
@@ -225,7 +207,7 @@ function AddCourse() {
                 />
               </div>
 
-              {/* File Uploads - vertically stacked */}
+              {/* File Uploads */}
               <div className="form-group">
                 <label>Upload Video:</label>
                 <input
@@ -317,7 +299,7 @@ function AddCourse() {
           ))}
 
           <button type="submit" className="submit-btn">
-            Add Course
+            Next
           </button>
         </form>
       </div>

@@ -75,6 +75,22 @@
 .register-btn:hover {
   background-color: #0090dd;
 }
+/* Style for Verify link */
+.verify-link {
+  padding: 0.5rem 1rem;
+  background-color: #000001; /* green */
+  color: #fff;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.verify-link:hover {
+  background-color: #000000; /* darker green on hover */
+  color: #4e74c6;
+}
 
 /* Responsive adjustments */
 @media (max-width: 768px) {

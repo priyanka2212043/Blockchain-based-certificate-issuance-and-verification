@@ -112,7 +112,6 @@ function InstructorDashboard() {
                   <hr />
                   <ul>
                     <li>Profile</li>
-                    <li>My Courses</li>
                     <li onClick={handleLogout} style={{ cursor: "pointer" }}>
                       Logout
                     </li>
@@ -135,24 +134,27 @@ function InstructorDashboard() {
             </button>
           </div>
 
-          <div className="grid">
-            {myCourses.length === 0 ? (
-              <p>No courses uploaded yet.</p>
-            ) : (
-              myCourses.map((course) => (
-                <div className="course-card" key={course._id}>
-                  <img
-                    src={
-                      categoryImages[course.category] || categoryImages["default"]
-                    }
-                    alt={course.title}
-                  />
-                  <h3>{course.title}</h3>
-                  <p className="instructor-name">By {course.instructorName}</p>
-                  <button>View Course</button>
-                </div>
-              ))
-            )}
+          {/* Scrollable container */}
+          <div className="courses-scroll-container">
+            <div className="grid">
+              {myCourses.length === 0 ? (
+                <p>No courses uploaded yet.</p>
+              ) : (
+                myCourses.map((course) => (
+                  <div className="course-card" key={course._id}>
+                    <img
+                      src={
+                        categoryImages[course.category] || categoryImages["default"]
+                      }
+                      alt={course.title}
+                    />
+                    <h3>{course.title}</h3>
+                    <p className="instructor-name">By {course.instructorName}</p>
+                    <button onClick={() => navigate(`/instructor/course/${course._id}`)}>View Course</button>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </section>
       </main>

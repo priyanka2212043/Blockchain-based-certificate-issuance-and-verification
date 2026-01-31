@@ -246,3 +246,23 @@ main {
   border-radius: 4px;
   cursor: pointer;
 }
+
+/* Scrollable courses container */
+.courses-scroll-container {
+  max-height: 70vh; /* adjust as needed */
+  overflow-y: auto;
+  padding-right: 8px; /* prevent content cutoff */
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for Chrome, Safari */
+.courses-scroll-container::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Hide scrollbar for Firefox */
+.courses-scroll-container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

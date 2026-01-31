@@ -17,10 +17,10 @@ const enrollmentSchema = new mongoose.Schema({
       }
     }
   ],
-
-  // 🔑 Store IPFS URL permanently after all modules completed
-  ipfsHash1: { type: String, default: null }
+  certificateOnChain: {
+    txHash: { type: String },  // stores blockchain transaction hash (hash2 is on-chain only)
+  },
 });
 
-const Enrollment = mongoose.model("Enrollment", enrollmentSchema);
+const Enrollment = mongoose.models.Enrollment || mongoose.model("Enrollment", enrollmentSchema);
 export default Enrollment;

@@ -1,0 +1,177 @@
+/* Whole page container */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f9fafb;
+}
+
+/* Fixed header at top */
+.my-courses-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 24px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+/* Back button */
+.back-button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.back-button:hover {
+  text-decoration: underline;
+}
+
+/* Logo area */
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.logo-img {
+  height: 32px;
+}
+
+.logo-text {
+  font-weight: bold;
+  font-size: 18px;
+  color: #000;
+}
+
+/* Report container (pushed below header) */
+.students-report-container {
+  padding: 100px 20px 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #ffffff;
+  color: #000000;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  flex-grow: 1;
+  overflow: hidden;
+}
+
+/* Title */
+.students-report-container h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Print button */
+.print-btn {
+  margin-bottom: 15px;
+  padding: 8px 15px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.print-btn:hover {
+  background-color: #1d4ed8;
+}
+
+/* Filters Section */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.filters label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+.filters select,
+.filters input[type="date"] {
+  padding: 5px 8px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+/* Scrollable table container */
+.students-table-container {
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+/* Table */
+.students-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: #ffffff;
+  color: #000000;
+}
+
+/* Table cells */
+.students-table th,
+.students-table td {
+  border: 1px solid #000;
+  padding: 10px;
+  text-align: left;
+  font-size: 14px;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+/* Sticky header row */
+.students-table th {
+  background-color: #e5e7eb;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* No alternate row coloring */
+.students-table tr:nth-child(even),
+.students-table tr:hover {
+  background-color: #fff;
+}
+
+/* Print Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .students-report-container,
+  .students-report-container * {
+    visibility: visible;
+  }
+  .students-report-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+  .print-btn {
+    display: none;
+  }
+}

@@ -9,6 +9,9 @@ import CourseDetail from '../../components/CourseDetail';
 import MyCourses from '../../components/MyCourses';
 import AddCourse from '../../components/AddCourse';
 import DoCourse from '../../components/DoCourse';
+import SelectTemplate from '../../components/SelectTemplate';
+import VerifierDashboard from '../../components/VerifierDashboard';
+import InstructorCourseStudents from '../../components/InstructorCourseStudents';
 
 function App() {
   return (
@@ -23,6 +26,9 @@ function App() {
         <Route path="/my-courses" element={<MyCourses />} />
         <Route path="/add-course" element={<AddCourse/>}/>
         <Route path="/do-course/:courseId" element={<DoCourse />} />
+        <Route path="/select-template/:courseId" element={<SelectTemplate />} />
+        <Route path="/verifier" element={<VerifierDashboard/>} />
+        <Route path="/instructor/course/:courseId" element={<InstructorCourseStudents/>} />
       </Routes>
     </Router>
   );

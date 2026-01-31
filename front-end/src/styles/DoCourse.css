@@ -203,7 +203,12 @@ body {
   border-radius: 8px;
   background-color: #fafafa;
 }
-
+.course-title{
+  padding-top: 50px;
+}
+a{
+  cursor: pointer;
+}
 .question {
   font-weight: 500;
   margin-bottom: 10px;
@@ -221,6 +226,25 @@ body {
 input[type="radio"] {
   accent-color: #4CAF50;
 }
+
+
+
+/* Scrollable module content */
+.module-content-wrapper {
+  max-height: calc(100vh - 120px); /* viewport height minus header + some margin */
+  overflow-y: auto;
+  padding-right: 10px; /* for scrollbar spacing */
+  margin-bottom: 30px;
+  padding-top: 50px;
+}
+
+/* Optional: keep module content padding */
+.module-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 
 /* Responsive */
 @media (max-width: 768px) {

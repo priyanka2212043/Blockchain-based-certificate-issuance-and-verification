@@ -17,7 +17,7 @@ function StudentDashboard() {
   const [selectedCategory, setSelectedCategory] = useState("All"); // ✅ browse filter
   const dropdownRef = useRef(null);
 
-  // ✅ Fetch all courses (students can view all)
+  // ✅ Fetch all courses
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -167,26 +167,33 @@ function StudentDashboard() {
               ? "Available Courses"
               : `${selectedCategory} Courses`}
           </h2>
-          <div className="grid">
-            {filteredCourses.length === 0 ? (
-              <p>No courses found.</p>
-            ) : (
-              filteredCourses.map((course) => (
-                <div className="course-card" key={course._id}>
-                  <img
-                    src={
-                      categoryImages[course.category] || categoryImages["default"]
-                    }
-                    alt={course.title}
-                  />
-                  <h3>{course.title}</h3>
-                  <p className="instructor-name">By {course.instructorName}</p>
-                  <button onClick={() => navigate(`/courses/${course._id}`)}>
-                    View Course
-                  </button>
-                </div>
-              ))
-            )}
+
+          {/* Scrollable container */}
+          <div className="courses-scroll-container">
+            <div className="grid">
+              {filteredCourses.length === 0 ? (
+                <p>No courses found.</p>
+              ) : (
+                filteredCourses.map((course) => (
+                  <div className="course-card" key={course._id}>
+                    <img
+                      src={
+                        categoryImages[course.category] ||
+                        categoryImages["default"]
+                      }
+                      alt={course.title}
+                    />
+                    <h3>{course.title}</h3>
+                    <p className="instructor-name">
+                      By {course.instructorName}
+                    </p>
+                    <button onClick={() => navigate(`/courses/${course._id}`)}>
+                      View Course
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </section>
       </main>

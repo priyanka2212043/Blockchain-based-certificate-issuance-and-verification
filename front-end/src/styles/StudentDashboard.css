@@ -315,3 +315,24 @@ section h2 {
 .back-button:hover {
   background-color: #f0f0f0;
 }
+
+
+/* Scrollable courses container */
+.courses-scroll-container {
+  max-height: 70vh; /* adjust height as needed */
+  overflow-y: auto;
+  padding-right: 8px; /* for spacing so content isn't cut off */
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar for Chrome, Safari */
+.courses-scroll-container::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Hide scrollbar for Firefox */
+.courses-scroll-container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

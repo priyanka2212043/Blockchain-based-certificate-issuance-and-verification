@@ -2,7 +2,7 @@ import express from "express";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
-import { addCourse, getCourses, getCoursesByInstructor, getCourseById, getCourseWithModules } from "../controllers/courseController.js";
+import { addCourse, getCourses, getCoursesByInstructor, getCourseById, getCourseWithModules, updateCourseTemplate, getCourseStudents } from "../controllers/courseController.js";
 
 const router = express.Router();
 
@@ -27,10 +27,17 @@ router.post("/add", upload.any(), addCourse);
 // Get all courses
 router.get("/", getCourses);
 
+
+router.get("/:courseId/students", getCourseStudents);
 // Get course by id
 router.get("/:id", getCourseById);
 
 // Get courses by instructor
 router.get("/instructor/:instructorId", getCoursesByInstructor);
 router.get("/:courseId", getCourseWithModules);
+
+
+router.patch("/:id/update-template", upload.single("signature"), updateCourseTemplate);
+
+
 export default router;

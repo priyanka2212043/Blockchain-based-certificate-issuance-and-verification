@@ -1,6 +1,7 @@
+/* Container */
 .my-courses-container {
-  min-height: 100vh;     /* full viewport height */
-  width: 100vw;          /* full viewport width */
+  min-height: 100vh;
+  width: 100vw;
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -9,18 +10,22 @@
   flex-direction: column;
 }
 
-/* Header spans full width */
+/* Header */
 .my-courses-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
+  padding: 15px 24px;
   background: #fff;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   width: 100%;
+  height: 85px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
-/* Back button */
+/* Back Button */
 .back-button {
   padding: 8px 16px;
   background-color: #f3f4f6;
@@ -34,11 +39,13 @@
   background-color: #e5e7eb;
 }
 
-/* Logo area */
+/* Logo */
 .logo-area {
   display: flex;
   align-items: center;
   gap: 10px;
+  cursor: pointer;
+  margin-left: auto;  
 }
 .logo-img {
   width: 45px;
@@ -54,19 +61,26 @@
 /* Courses Section */
 .courses-section {
   flex: 1;
-  padding: 30px;
+  padding: 40px 30px 30px 30px;
+  margin-top: 85px;
   width: 100%;
   background: #fff;
-  border-radius: 0;              /* remove rounded corners */
-  box-shadow: none;              /* remove card look */
-  overflow-x: auto;
+  overflow: hidden;
 }
 
+/* Table Wrapper for Scroll */
+.table-wrapper {
+  max-height: calc(100vh - 80px); /* adjust for header height */
+  overflow-y: auto;
+}
+
+/* Table */
 .courses-table {
   width: 100%;
   border-collapse: collapse;
 }
 
+/* Table Head & Body */
 .courses-table th,
 .courses-table td {
   text-align: left;
@@ -75,12 +89,17 @@
   color: black;
 }
 
-.courses-table th {
+/* Fixed table header */
+.courses-table thead th {
+  position: sticky;
+  top: 0;
   background-color: #5b90c4;
-  font-weight: 600;
   color: #010101;
+  font-weight: 600;
+  z-index: 5;
 }
 
+/* Thumbnail */
 .course-thumb {
   width: 70px;
   height: 50px;
@@ -88,6 +107,7 @@
   border-radius: 6px;
 }
 
+/* Action Button */
 .courses-table button {
   padding: 8px 16px;
   background-color: #2563eb;

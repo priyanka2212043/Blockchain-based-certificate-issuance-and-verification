@@ -13,6 +13,7 @@ function Navbar() {
         </div>
         <div className="navbar-right">
           <a href="#">Courses</a>
+          <a className="verify-link" onClick={() => navigate('/verifier')}>Verify</a>
           <button className="login-btn" onClick={() => navigate('/login')}>Log in</button>
           <button className="register-btn" onClick={() => navigate('/register')}>Register</button>
         </div>

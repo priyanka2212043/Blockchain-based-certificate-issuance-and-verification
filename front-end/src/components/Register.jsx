@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import '../styles/Register.css';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
+import Navbar from './NavBar2';
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -10,26 +11,63 @@ const Register = () => {
     password: '',
     role: 'student'
   });
+  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: '' }); // clear error on change
+  };
+
+  const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const validatePassword = (password) => {
+    const pwErrors = [];
+    if (password.length < 8) pwErrors.push('at least 8 characters');
+    if (!/[A-Z]/.test(password)) pwErrors.push('an uppercase letter');
+    if (!/[a-z]/.test(password)) pwErrors.push('a lowercase letter');
+    if (!/\d/.test(password)) pwErrors.push('a number');
+    if (!/[@$!%*?&]/.test(password)) pwErrors.push('a special character');
+    return pwErrors;
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!form.username.trim()) newErrors.username = 'Name is required';
+    if (!form.email) newErrors.email = 'Email is required';
+    else if (!isValidEmail(form.email)) newErrors.email = 'Invalid email format';
+
+    if (!form.password) newErrors.password = 'Password is required';
+    else {
+      const pwErrors = validatePassword(form.password);
+      if (pwErrors.length > 0)
+        newErrors.password = `Password must include ${pwErrors.join(', ')}`;
+    }
+
+    return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     try {
       const res = await api.post('/auth/register', form);
       alert(res.data.message);
       navigate('/login');
     } catch (err) {
-      alert(err.response?.data?.message || 'Registration failed');
+      setErrors({ submit: err.response?.data?.message || 'Registration failed' });
     }
   };
 
   return (
     <div className="register-page">
+      <Navbar/>
       <form className="register-container" onSubmit={handleSubmit}>
         <h2>Sign Up</h2>
 
@@ -40,8 +78,8 @@ const Register = () => {
           placeholder="Enter your name"
           value={form.username}
           onChange={handleChange}
-          required
         />
+        {errors.username && <span className="error">{errors.username}</span>}
 
         <label>Email</label>
         <input
@@ -50,8 +88,8 @@ const Register = () => {
           placeholder="Enter your email"
           value={form.email}
           onChange={handleChange}
-          required
         />
+        {errors.email && <span className="error">{errors.email}</span>}
 
         <label>Password</label>
         <div className="password-input">
@@ -61,28 +99,24 @@ const Register = () => {
             placeholder="Enter your password"
             value={form.password}
             onChange={handleChange}
-            required
           />
           <button type="button" onClick={() => setShowPassword(!showPassword)}>
             {showPassword ? 'Hide' : 'Show'}
           </button>
         </div>
+        {errors.password && <span className="error">{errors.password}</span>}
 
         <label>Role</label>
-        <select name="role" value={form.role} onChange={handleChange} required>
+        <select name="role" value={form.role} onChange={handleChange}>
           <option value="student">Student</option>
           <option value="instructor">Course Instructor</option>
         </select>
 
         <button type="submit" className="signup-btn">Sign up</button>
 
-        <hr />
-        <p className="or-text">or</p>
+        {errors.submit && <span className="error submit-error">{errors.submit}</span>}
 
-        <button className="google-button" type="button">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="google icon" />
-          Sign up with Google
-        </button>
+        <hr />
 
         <p className="login-link">
           Already have an account? <Link to="/login">Log in</Link>

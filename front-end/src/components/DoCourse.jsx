@@ -14,43 +14,50 @@ function DoCourse() {
   const [currentModuleIndex, setCurrentModuleIndex] = useState(null);
   const [mcqAnswers, setMcqAnswers] = useState({});
   const [step, setStep] = useState(1);
-  const [unlockedModules, setUnlockedModules] = useState(null); // null until loaded
+  const [unlockedModules, setUnlockedModules] = useState(null);
   const [completedModules, setCompletedModules] = useState([]);
 
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // Fetch course and student progress
+  // 🔄 helper to fetch student progress
+  const fetchProgress = async () => {
+    try {
+      const { data: enrollmentData } = await api.get(
+        `${API_BASE_URL}/enroll/progress?studentId=${storedUser.id}&courseId=${courseId}`
+      );
+
+      if (enrollmentData?.progress) {
+        const completed = enrollmentData.progress
+          .map((p, idx) => (p.status === "completed" ? idx : null))
+          .filter((v) => v !== null);
+
+        const unlocked = enrollmentData.progress
+          .map((p, idx) =>
+            p.status === "completed" || p.status === "unlocked" ? idx : null
+          )
+          .filter((v) => v !== null);
+
+        setCompletedModules(completed);
+        setUnlockedModules(unlocked.length ? unlocked : [0]);
+      } else {
+        setUnlockedModules([0]);
+      }
+    } catch (err) {
+      console.error("Error refreshing progress", err);
+      setUnlockedModules([0]);
+    }
+  };
+
+  // fetch course + progress on mount
   useEffect(() => {
     const fetchCourseAndProgress = async () => {
       try {
-        // 1️⃣ Fetch course details
         const { data: courseData } = await api.get(`${API_BASE_URL}/courses/${courseId}`);
         setCourse(courseData);
-
-        // 2️⃣ Fetch enrollment progress
-        const { data: enrollmentData } = await api.get(
-          `${API_BASE_URL}/enroll/progress?studentId=${storedUser.id}&courseId=${courseId}`
-        );
-
-        if (enrollmentData?.progress) {
-          const completed = enrollmentData.progress
-            .map((p, idx) => (p.status === "completed" ? idx : null))
-            .filter((v) => v !== null);
-
-          const unlocked = enrollmentData.progress
-            .map((p, idx) =>
-              p.status === "completed" || p.status === "unlocked" ? idx : null
-            )
-            .filter((v) => v !== null);
-
-          setCompletedModules(completed);
-          setUnlockedModules(unlocked.length ? unlocked : [0]); // if no data, unlock first
-        } else {
-          setUnlockedModules([0]); // fallback if no enrollment data
-        }
+        await fetchProgress();
       } catch (err) {
         console.error("Error fetching course or enrollment", err);
-        setUnlockedModules([0]); // fallback in case of error
+        setUnlockedModules([0]);
       }
     };
 
@@ -58,7 +65,6 @@ function DoCourse() {
   }, [courseId]);
 
   if (!course) return <p className="loading">Loading course...</p>;
-
   const module =
     currentModuleIndex !== null ? course.modules[currentModuleIndex] : null;
 
@@ -66,7 +72,7 @@ function DoCourse() {
     setMcqAnswers({ ...mcqAnswers, [qIndex]: optionText });
   };
 
-  // Submit quiz and update progress
+  // ✅ Submit quiz
   const handleSubmitMCQ = async () => {
     let correctCount = 0;
     module.mcq.forEach((q, idx) => {
@@ -80,41 +86,65 @@ function DoCourse() {
       alert(`✅ Passed this module! Score: ${percentage}%`);
 
       try {
-        const { data } = await api.put(`${API_BASE_URL}/enroll/update-progress`, {
+        await api.put(`${API_BASE_URL}/enroll/update-progress`, {
           studentId: storedUser.id,
           courseId,
           moduleId: module._id,
         });
 
-        // Update frontend state from backend response
-        if (data.enrollment?.progress) {
-          const completed = data.enrollment.progress
-            .map((p, idx) => (p.status === "completed" ? idx : null))
-            .filter((v) => v !== null);
-
-          const unlocked = data.enrollment.progress
-            .map((p, idx) =>
-              p.status === "completed" || p.status === "unlocked" ? idx : null
-            )
-            .filter((v) => v !== null);
-
-          setCompletedModules(completed);
-          setUnlockedModules(unlocked);
-        }
+        await fetchProgress();
       } catch (err) {
         console.error("Error updating module status", err);
       }
-
-      // Reset local module state
-      setStep(1);
-      setMcqAnswers({});
-      setCurrentModuleIndex(null);
     } else {
       alert(
-        `❌ Failed this module! Score: ${percentage}%\nPass mark: ${module.passMark}%\nPlease try again.`
+        `❌ Failed this module! Score: ${percentage}%\nPass mark: ${module.passMark}%\nReturning to modules...`
       );
     }
+
+    setStep(1);
+    setMcqAnswers({});
+    setCurrentModuleIndex(null);
+    await fetchProgress();
   };
+
+  // ✅ Download certificate from IPFS
+// ✅ Download certificate from enrollment record
+const handleDownloadCertificate = async () => {
+  try {
+    // Fetch the certificate hash from enrollment
+    const res = await api.get(
+      `${API_BASE_URL}/enroll/certificate?studentId=${storedUser.id}&courseId=${courseId}`
+    );
+
+    const certificateHash = res.data.certificateIpfsHash;
+    if (!certificateHash) {
+      alert("Certificate not available yet.");
+      return;
+    }
+
+    // Fetch the actual certificate PDF from IPFS
+    const response = await fetch(`https://ipfs.io/ipfs/${certificateHash}`);
+    console.log(response);
+    if (!response.ok) throw new Error("Failed to fetch certificate");
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    // Create temporary link to trigger download
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `certificate-${course.title}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error("Error downloading certificate:", err);
+    alert("Failed to download certificate");
+  }
+};
+
 
   return (
     <>
@@ -124,8 +154,8 @@ function DoCourse() {
           ← Back
         </button>
         <div className="logo-area">
-          <img src={logo} alt="CertiChain Logo" className="logo-img" />
-          <span className="logo-text">CertiChain</span>
+          <a onClick={() => navigate('/student')}><img src={logo} alt="CertiChain Logo" className="logo-img" /></a>
+          <a onClick={() => navigate('/student')}><span className="logo-text">CertiChain</span></a>
         </div>
       </header>
 
@@ -134,41 +164,54 @@ function DoCourse() {
 
         {/* Module List */}
         {currentModuleIndex === null && (
-          <ul className="modules-list">
-            {unlockedModules === null ? (
-              <p className="loading">Loading modules...</p>
-            ) : (
-              course.modules.map((mod, index) => (
-                <li
-                  key={index}
-                  className={`module-card ${
-                    completedModules.includes(index)
-                      ? "completed"
-                      : unlockedModules.includes(index)
-                      ? "unlocked"
-                      : "locked"
-                  }`}
+          <>
+            <ul className="modules-list">
+              {unlockedModules === null ? (
+                <p className="loading">Loading modules...</p>
+              ) : (
+                course.modules.map((mod, index) => (
+                  <li
+                    key={index}
+                    className={`module-card ${
+                      completedModules.includes(index)
+                        ? "completed"
+                        : unlockedModules.includes(index)
+                        ? "unlocked"
+                        : "locked"
+                    }`}
+                  >
+                    <h3>{mod.title}</h3>
+                    {completedModules.includes(index) ? (
+                      <button onClick={() => setCurrentModuleIndex(index)}>
+                        Completed
+                      </button>
+                    ) : unlockedModules.includes(index) ? (
+                      <button onClick={() => setCurrentModuleIndex(index)}>
+                        Start Module
+                      </button>
+                    ) : (
+                      <p>🔒 Locked</p>
+                    )}
+                  </li>
+                ))
+              )}
+            </ul>
+            {/* ✅ Download Certificate button */}
+            {completedModules.length === course.modules.length && (
+                
+                <button
+                  className="download-certificate-btn"
+                  onClick={handleDownloadCertificate}
                 >
-                  <h3>{mod.title}</h3>
-                  {completedModules.includes(index) ? (
-                    <button onClick={() => setCurrentModuleIndex(index)}>
-                      Completed
-                    </button>
-                  ) : unlockedModules.includes(index) ? (
-                    <button onClick={() => setCurrentModuleIndex(index)}>
-                      Start Module
-                    </button>
-                  ) : (
-                    <p>🔒 Locked</p>
-                  )}
-                </li>
-              ))
-            )}
-          </ul>
+                  🎓 Download Certificate
+                </button>
+              )}
+          </>
         )}
 
         {/* Module Content */}
         {currentModuleIndex !== null && module && (
+          <div className="module-content-wrapper">
           <div className="module-content">
             <h3 className="module-title">📘 {module.title}</h3>
 
@@ -228,6 +271,7 @@ function DoCourse() {
                 </button>
               </div>
             )}
+          </div>
           </div>
         )}
       </div>

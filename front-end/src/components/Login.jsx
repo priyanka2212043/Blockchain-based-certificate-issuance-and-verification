@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import googleIcon from '../assets/google-icon.jpg';
 import '../styles/Login.css';
 import api from '../utils/api';
+import Navbar from './NavBar2';
 
 function Login() {
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ function Login() {
 
   return (
     <div className="login-container">
+      <Navbar/>
       <div className="login-box">
         <h2>Log In</h2>
         <form className="login-form" onSubmit={handleSubmit}>
@@ -89,17 +91,6 @@ function Login() {
             {loading ? 'Logging in...' : 'Log in'}
           </button>
         </form>
-
-        <div className="divider">
-          <hr /><span>or</span><hr />
-        </div>
-
-        <div className="login-options">
-          <button className="google-login" type="button" onClick={handleGoogleLogin}>
-            <img src={googleIcon} alt="Google" />
-            Continue with Google
-          </button>
-        </div>
 
         <p className="create-account">
           New to Certichain?{' '}

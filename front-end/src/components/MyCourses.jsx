@@ -11,6 +11,7 @@ function MyCourses() {
   const navigate = useNavigate();
   const [myCourses, setMyCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchMyCourses = async () => {
       try {
@@ -30,58 +31,64 @@ function MyCourses() {
 
   return (
     <div className="my-courses-container">
+      {/* Header */}
       <header className="my-courses-header">
         <button className="back-button" onClick={() => navigate(-1)}>
           ← Back
         </button>
 
-        <div className="logo-area">
+        <div className="logo-area" onClick={() => navigate("/student")}>
           <img src={logo} alt="CertiChain Logo" className="logo-img" />
           <span className="logo-text">CertiChain</span>
         </div>
       </header>
 
+      {/* Courses Table */}
       <section className="courses-section">
         {loading ? (
           <p>Loading courses...</p>
         ) : myCourses.length === 0 ? (
           <p>You have not enrolled in any courses yet.</p>
         ) : (
-          <table className="courses-table">
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Title</th>
-                <th>Instructor</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {myCourses.map((course) => (
-                <tr key={course.id}>
-                  <td>
-                    <img
-                      src={
-                        categoryImages[course.category] ||
-                        categoryImages["default"]
-                      }
-                      alt={course.title}
-                      className="course-thumb"
-                    />
-                  </td>
-                  <td>{course.title}</td>
-                  <td>{course.instructorName}</td>
-                  <td>{course.status}</td>
-                  <td>
-                    <button onClick={() => navigate(`/do-course/${course.id}`)}>
-                      Open
-                    </button>
-                  </td>
+          <div className="table-wrapper">
+            <table className="courses-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Title</th>
+                  <th>Instructor</th>
+                  <th>Status</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {myCourses.map((course) => (
+                  <tr key={course.id}>
+                    <td>
+                      <img
+                        src={
+                          categoryImages[course.category] ||
+                          categoryImages["default"]
+                        }
+                        alt={course.title}
+                        className="course-thumb"
+                      />
+                    </td>
+                    <td>{course.title}</td>
+                    <td>{course.instructorName}</td>
+                    <td>{course.status}</td>
+                    <td>
+                      <button
+                        onClick={() => navigate(`/do-course/${course.id}`)}
+                      >
+                        Open
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
     </div>

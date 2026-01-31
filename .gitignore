@@ -1,0 +1,19 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# Environment
+.env
+
+# Uploads / media
+uploads/
+back-end/uploads/
+front-end/src/assets/certificates/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
